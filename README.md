@@ -1,27 +1,108 @@
 # HelloCfNg
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.1.5.
+Pivotal Cloud FoundryへのAngular Appデプロイのサンプル
 
-## Development server
+## Development Environment
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+* Node 8~
+* npm 6~
+* Angular CLI 6~
+* Cloud Foundry CLI
 
-## Code scaffolding
+Angular CLIのインストール
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+$ npm install -g @angular/cli
+$ ng version
+```
 
-## Build
+[Cloud Foundry CLI](https://github.com/crowdfoundy/cli)のインストール
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```bash
+$ brew install cloudfoundry/tap/cf-cli
+$ cf --version
+```
 
-## Running unit tests
+またはインストーラで
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Create Project
 
-## Running end-to-end tests
+```bash
+$ ng new HelloCf --prefix hc --routing
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+## Staticfile Setting for URL Rewrite
 
-## Further help
+ルート以外のパスがルートの`index.html`にリライトされるよう設定する。
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+`Staticfile`を追加。
+
+```bash
+$ touch src/Staticfile
+```
+
+`Staticfile`に設定を追加。
+
+```diff
++ pushstate: enabled
+```
+
+`Staticfile`がビルド時に資産に含まれるよう、`angular.json`を編集する。
+
+` projects.hello-cf-ng.architect.build.options.assets`
+
+```diff
+    "assets": [
+      "src/favicon.ico",
+      "src/assets",
++      "src/Staticfile"
+    ],
+```
+
+## build
+
+```bash
+$ ng build --prod
+```
+
+`dist/hello-cf/`に`Staticfile`が含まれることを確認する。
+
+## Deploy
+
+Cloud Foundryへのデプロイ。
+
+ログインする。ドメインやユーザー情報は管理者に確認。
+
+```bash
+$ cf login -a {cf domain}
+EMAIL> {User ID}
+PASSWORD> {User Password}
+```
+
+デプロイする
+
+```bash
+$ cf push hello-ng-user06 -p dist/hello-cf/ -b staticfile_buildpack -m 32m 
+```
+
+|オプション|設定値|
+|---|---|
+|-p|デプロイする資産の格納ディレクトリ|
+|-b|ビルドパックの設定。Angularのビルド資産は静的Webアプリなので`staticfile_buildpack`を設定。|
+|-m|メモリ容量|
+
+確認
+
+```bash
+$ cf apps
+  .
+  .
+  .
+hello-cf               started           1/1         32M      1G     hello-cf.example.com
+
+```
+
+ログの確認
+```bash
+$ cf logs hello-ng-user06 --recent
+```
