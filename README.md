@@ -4,10 +4,29 @@ Pivotal Cloud FoundryへのAngular Appデプロイのサンプル
 
 ## Development Environment
 
-* Node 8~
-* npm 6~
-* Angular CLI 6~
-* Cloud Foundry CLI
+試した環境
+
+```bash
+$ ng version
+
+     _                      _                 ____ _     ___
+    / \   _ __   __ _ _   _| | __ _ _ __     / ___| |   |_ _|
+   / △ \ | '_ \ / _` | | | | |/ _` | '__|   | |   | |    | |
+  / ___ \| | | | (_| | |_| | | (_| | |      | |___| |___ | |
+ /_/   \_\_| |_|\__, |\__,_|_|\__,_|_|       \____|_____|___|
+                |___/
+    
+
+Angular CLI: 6.1.5
+Node: 10.8.0
+OS: darwin x64
+Angular: 6.1.6
+
+$ cf -v
+cf version 6.38.0+7ddf0aadd.2018-08-07
+```
+
+### Environment Setting
 
 Angular CLIのインストール
 
@@ -104,5 +123,5 @@ hello-cf               started           1/1         32M      1G     hello-cf.ex
 
 ログの確認
 ```bash
-$ cf logs hello-ng-user06 --recent
+$ cf logs hello-cf --recent
 ```
