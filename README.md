@@ -101,7 +101,7 @@ PASSWORD> {User Password}
 デプロイする
 
 ```bash
-$ cf push hello-ng-user06 -p dist/hello-cf/ -b staticfile_buildpack -m 32m 
+$ cf push hello-ng -p dist/hello-cf/ -b staticfile_buildpack -m 32m 
 ```
 
 |オプション|設定値|
